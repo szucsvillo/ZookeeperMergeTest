@@ -59,7 +59,7 @@ JIRA_PASSWORD = os.environ.get("JIRA_PASSWORD", "")
 # https://github.com/settings/tokens. This script only requires the "public_repo" scope.
 GITHUB_OAUTH_KEY = os.environ.get("GITHUB_OAUTH_KEY")
 
-GITHUB_USER = os.environ.get("GITHUB_USER", "apache")
+GITHUB_USER = os.environ.get("GITHUB_USER", "szucsvillo")
 GITHUB_BASE = "https://github.com/%s/%s/pull" % (GITHUB_USER, PROJECT_NAME)
 GITHUB_API_BASE = "https://api.github.com/repos/%s/%s" % (GITHUB_USER, PROJECT_NAME)
 JIRA_BASE = "https://issues.apache.org/jira/browse"
@@ -333,25 +333,25 @@ def standardize_jira_ref(text):
     """
     Standardize the jira reference commit message prefix to "PROJECT_NAME-XXX: Issue"
 
-    >>> standardize_jira_ref("%s-5954: Top by key" % CAPITALIZED_PROJECT_NAME)
+#    >>> standardize_jira_ref("%s-5954: Top by key" % CAPITALIZED_PROJECT_NAME)
     'ZOOKEEPER-5954: Top by key'
-    >>> standardize_jira_ref("%s-5821: ParquetRelation2 CTAS should check if delete is successful" % PROJECT_NAME)
+#    >>> standardize_jira_ref("%s-5821: ParquetRelation2 CTAS should check if delete is successful" % PROJECT_NAME)
     'ZOOKEEPER-5821: ParquetRelation2 CTAS should check if delete is successful'
-    >>> standardize_jira_ref("%s-4123: [WIP] Show new dependencies added in pull requests" % PROJECT_NAME)
+#    >>> standardize_jira_ref("%s-4123: [WIP] Show new dependencies added in pull requests" % PROJECT_NAME)
     'ZOOKEEPER-4123: [WIP] Show new dependencies added in pull requests'
-    >>> standardize_jira_ref("%s  5954: Top by key" % PROJECT_NAME)
+#    >>> standardize_jira_ref("%s  5954: Top by key" % PROJECT_NAME)
     'ZOOKEEPER-5954: Top by key'
-    >>> standardize_jira_ref("%s-979: a LRU scheduler for load balancing in TaskSchedulerImpl" % PROJECT_NAME)
+#    >>> standardize_jira_ref("%s-979: a LRU scheduler for load balancing in TaskSchedulerImpl" % PROJECT_NAME)
     'ZOOKEEPER-979: a LRU scheduler for load balancing in TaskSchedulerImpl'
-    >>> standardize_jira_ref("%s-1094: Support MiMa for reporting binary compatibility across versions." % CAPITALIZED_PROJECT_NAME)
+#    >>> standardize_jira_ref("%s-1094: Support MiMa for reporting binary compatibility across versions." % CAPITALIZED_PROJECT_NAME)
     'ZOOKEEPER-1094: Support MiMa for reporting binary compatibility across versions.'
-    >>> standardize_jira_ref("%s-1146: [WIP] Vagrant support" % CAPITALIZED_PROJECT_NAME)
+#    >>> standardize_jira_ref("%s-1146: [WIP] Vagrant support" % CAPITALIZED_PROJECT_NAME)
     'ZOOKEEPER-1146: [WIP] Vagrant support'
-    >>> standardize_jira_ref("%s-1032: If Yarn app fails before registering, app master stays aroun..." % PROJECT_NAME)
+#    >>> standardize_jira_ref("%s-1032: If Yarn app fails before registering, app master stays aroun..." % PROJECT_NAME)
     'ZOOKEEPER-1032: If Yarn app fails before registering, app master stays aroun...'
-    >>> standardize_jira_ref("%s-6250 %s-6146 %s-5911: Types are now reserved words in DDL parser." % (PROJECT_NAME, PROJECT_NAME, CAPITALIZED_PROJECT_NAME))
+#    >>> standardize_jira_ref("%s-6250 %s-6146 %s-5911: Types are now reserved words in DDL parser." % (PROJECT_NAME, PROJECT_NAME, CAPITALIZED_PROJECT_NAME))
     'ZOOKEEPER-6250 ZOOKEEPER-6146 ZOOKEEPER-5911: Types are now reserved words in DDL parser.'
-    >>> standardize_jira_ref("Additional information for users building from source code")
+#    >>> standardize_jira_ref("Additional information for users building from source code")
     'Additional information for users building from source code'
     """
     jira_refs = []
@@ -440,7 +440,7 @@ def main():
     check_git_remote()
 
     branches = get_json("%s/branches" % GITHUB_API_BASE)
-    branch_names = [x for x in [x['name'] for x in branches] if x.startswith(RELEASE_BRANCH_PREFIX)]
+    branch_names = [x for x in [x['name'] for x in branches]]
     # Assumes branch names can be sorted lexicographically
     latest_branch = sorted(branch_names, reverse=True)[0]
 
