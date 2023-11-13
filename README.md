@@ -13,6 +13,7 @@ Teszt commit01
 5
 
 6
+Teszt commit06
 
 7
 
