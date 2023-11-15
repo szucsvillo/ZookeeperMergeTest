@@ -9,6 +9,7 @@ Teszt commit02
 Teszt commit12
 3
 Teszt commit03
+Teszt commit13
 
 4
 Teszt commit04
