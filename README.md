@@ -24,6 +24,7 @@ Teszt commit04
 Teszt commit08
 
 9
+Teszt commit29
 
 10
 Teszt commit11
