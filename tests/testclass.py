@@ -1,13 +1,7 @@
 # tests/testclass.py
 
-import unittest
+def test_addition():
+    assert 2 + 2 == 4, "Addition test failed"
 
-class TestClass(unittest.TestCase):
-
-    def test_nothing(self):
-
-        # Assert
-        self.assertEqual(5, 5, "Testing nothing")
-
-if __name__ == '__main__':
-    unittest.main()
+def test_subtraction():
+    assert 5 - 3 == 2, "Subtraction test failed"
