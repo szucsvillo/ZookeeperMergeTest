@@ -27,3 +27,4 @@ Teszt commit08
 
 10
 Teszt commit11
+Teszt commit30
