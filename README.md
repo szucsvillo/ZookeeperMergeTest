@@ -15,6 +15,7 @@ Teszt commit13
 Teszt commit04
 
 5
+Teszt commit25
 
 6
 
