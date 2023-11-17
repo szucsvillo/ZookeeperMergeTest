@@ -6,6 +6,7 @@ Teszt commit01
 Teszt commit34/3
 Teszt commit41/1
 Teszt commit41/2
+Teszt commit42/3
 
 2
 Teszt commit02
