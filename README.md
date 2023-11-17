@@ -30,6 +30,8 @@ Teszt commit35/2
 Teszt commit26
 
 7
+Teszt commit27
+Teszt commit27/2
 
 8
 Teszt commit08
