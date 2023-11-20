@@ -8,17 +8,17 @@ Teszt commit10
 Teszt commit51
 
 2
-Teszt commit0
-Teszt commit34/3
+Teszt commit02
+Teszt commit4/3
 Teszt commit41/1
 Teszt commit41/2
 Teszt commit21
 Teszt commit52
 
-
 2
 Teszt commit02
 Teszt commit12
+Teszt commit32
 Teszt commit32
 Teszt commit22
 Teszt commit41/3
@@ -30,13 +30,12 @@ Teszt commit33
 Teszt commit23
 Teszt commit53
 
-
 4
 Teszt commit04
 Teszt commit24
+Teszt commit23
 Teszt commit34
 Teszt commit34/2
-
 
 5
 Teszt commit25
