@@ -3,6 +3,11 @@ This repository is for testing the zk-merge-pr.py script.
 
 1
 Teszt commit01
+Teszt commit10
+
+2
+Teszt commit02
+
 Teszt commit34/3
 Teszt commit41/1
 Teszt commit41/2
