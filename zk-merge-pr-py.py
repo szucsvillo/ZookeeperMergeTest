@@ -166,10 +166,7 @@ def merge_pr(pr_num, title, pr_repo_desc):
     if all_checks_passed:
         print("All checks have passed on the github.")
     else:
-        result = input("Warning: Not all checks have passed on the github. Would you like to continue the merge? (y/n): ")
-        if result.lower().strip() != "y":
-            print("Okay, exiting")
-            exit()
+        continue_maybe("Warning: Not all checks have passed on the github. Would you like to continue the merge? (y/n): ")
 
     headers = {
         "Authorization": f"token {GITHUB_OAUTH_KEY}",
