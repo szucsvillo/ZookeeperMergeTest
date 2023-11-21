@@ -62,3 +62,4 @@ Teszt commit35/3
 11
 Teszt40
 Teszt commit20
+Teszt commit50
