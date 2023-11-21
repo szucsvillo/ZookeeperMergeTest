@@ -28,6 +28,7 @@ Teszt commit03
 Teszt commit13
 Teszt commit33
 Teszt commit23
+Teszt commit53
 
 
 4
