@@ -135,14 +135,15 @@ def merge_pr(pr_num, title, pr_repo_desc):
             commit_message = commit['commit']['message']
             merge_message += [commit_message]
 
-    #Check if there are no approved reviews
+    # Check for disapproval reviews
     json_reviewers = get_json(f"https://api.github.com/repos/{PUSH_REMOTE_NAME}/{PROJECT_NAME}/pulls/{pr_num}/reviews")
+    disapproval_reviews = [review['user']['login'] for review in json_reviewers if review['state'] == 'CHANGES_REQUESTED']
+    if disapproval_reviews:
+        continue_maybe("Warning: There are requested changes. Proceed with merging pull request #%s?" % pr_num)
+    #Check if there are no approved reviews
     approved_reviewers = [review['user']['login'] for review in json_reviewers if review['state'] == 'APPROVED']
     if not approved_reviewers:
-        result = input("Warning: Pull Request does not have an approved review. Would you like to continue the merge? (y/n): ")
-        if result.lower().strip() != "y":
-            print("Okay, exiting")
-            exit()
+        continue_maybe("Warning: Pull Request does not have an approved review. Proceed with merging pull request #%s?" % pr_num)
     else:
         reviewers_string = ', '.join(approved_reviewers)
         merge_message += [f"Reviewers: {reviewers_string}"]
@@ -181,18 +182,17 @@ def merge_pr(pr_num, title, pr_repo_desc):
     }
 
     response = requests.put(f"https://api.github.com/repos/{PUSH_REMOTE_NAME}/{PROJECT_NAME}/pulls/{pr_num}/merge", headers=headers, json=data)
+    merge_response_json = response.json()
+    merge_commit_sha = merge_response_json.get("sha")
 
     if response.status_code == 200:
-        print(f"Pull request #{pr_num} merged.")
-        json_merged = get_json(f"https://api.github.com/repos/{PUSH_REMOTE_NAME}/{PROJECT_NAME}/pulls/{pr_num}")
-        # Access the merge_commit_sha field
-        merge_commit_sha = json_merged["merge_commit_sha"]
+        print(f"Pull request #{pr_num} merged. Sha: #{merge_commit_sha}")
+        return merge_commit_sha
     else:
         print(f"Failed to merge pull request #{pr_num}. Status code: {response.status_code}")
         print(response.text)
-        merge_commit_sha = ""
+        exit()
 
-    return merge_commit_sha
 
 def cherry_pick(pr_num, merge_hash, default_branch):
     pick_ref = input("Enter a branch name [%s]: " % default_branch)
@@ -201,8 +201,8 @@ def cherry_pick(pr_num, merge_hash, default_branch):
 
     pick_branch_name = "%s_PICK_PR_%s_%s" % (TEMP_BRANCH_PREFIX, pr_num, pick_ref.upper())
 
-    run_cmd("git fetch %s %s:%s" % (PUSH_REMOTE_NAME, pick_ref, pick_branch_name))
-    run_cmd("git checkout %s" % pick_branch_name)
+    run_cmd("git fetch %s" % PUSH_REMOTE_NAME)
+    run_cmd("git checkout -b %s %s/%s" % (pick_branch_name, PUSH_REMOTE_NAME, pick_ref))
 
     try:
         run_cmd("git cherry-pick -sx %s" % merge_hash)
@@ -426,14 +426,20 @@ def main():
 
     pr_num = input("Which pull request would you like to merge? (e.g. 34): ")
     pr = get_json("%s/pulls/%s" % (GITHUB_API_BASE, pr_num))
-    pr_events = get_json("%s/issues/%s/events" % (GITHUB_API_BASE, pr_num))
 
-    url = pr["url"]
+    # Check if the pull request has already been closed
+    pull_request_state = pr.get("state", "")
+    if pull_request_state == "closed":
+        print(f"Pull request #{pr['number']} has already been merged.")
+        continue_maybe("Would you like to cherry-pick into another branch instead?")
+        merge_hash = pr.get("merge_commit_sha", "")
+        cherry_pick(pr_num, merge_hash, latest_branch)
 
     if not bool(pr["mergeable"]):
-        print("Pull request %s is not mergeable in its current form, exiting.\n" % pr_num)
+        print(f"Pull request %s is not mergeable in its current form. Please resolve the merge conflicts first!\n" % pr_num)
         exit()
 
+    url = pr["url"]
     pr_title = pr["title"]
     commit_title = input("Commit title [%s]: " % pr_title)
     if commit_title == "":
@@ -457,25 +463,6 @@ def main():
     user_login = pr["user"]["login"]
     base_ref = pr["head"]["ref"]
     pr_repo_desc = "%s/%s" % (user_login, base_ref)
-
-    # Merged pull requests don't appear as merged in the GitHub API;
-    # Instead, they're closed by asfgit.
-    merge_commits = \
-        [e for e in pr_events if e["actor"]["login"] == "asfgit" and e["event"] == "closed"]
-
-    if merge_commits:
-        merge_hash = merge_commits[0]["commit_id"]
-        message = get_json("%s/commits/%s" % (GITHUB_API_BASE, merge_hash))["commit"]["message"]
-
-        print("Pull request %s has already been merged, assuming you want to backport" % pr_num)
-        commit_is_downloaded = run_cmd(['git', 'rev-parse', '--quiet', '--verify',
-                                        "%s^{commit}" % merge_hash]).strip() != ""
-        if not commit_is_downloaded:
-            fail("Couldn't find any merge commit for #%s, you may need to update HEAD." % pr_num)
-
-        print("Found commit %s:\n%s" % (merge_hash, message))
-        cherry_pick(pr_num, merge_hash, latest_branch)
-        sys.exit(0)
 
     print(("\n=== Pull Request #%s ===" % pr_num))
     print(("PR title\t%s\nCommit title\t%s\nSource\t\t%s\nTarget\t\t%s\nURL\t\t%s" % (
