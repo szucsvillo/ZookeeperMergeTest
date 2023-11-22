@@ -427,13 +427,30 @@ def main():
     # Check if the pull request has already been closed
     pull_request_state = pr.get("state", "")
     if pull_request_state == "closed":
-        print(f"Pull request #{pr['number']} has already been merged.")
-        continue_maybe("Would you like to cherry-pick into another branch instead?")
-        merge_hash = pr.get("merge_commit_sha", "")
-        cherry_pick(pr_num, merge_hash, latest_branch)
+        merged = pr.get("merged")
+        # Merged by the Github API
+        if merged is not None and merged is True:
+            print(f"Pull request #{pr['number']} has already been merged, assuming you want to backport")
+            merge_hash = pr.get("merge_commit_sha", "")
+            cherry_pick(pr_num, merge_hash, latest_branch)
+            sys.exit(0)
+        # Some merged pull requests don't appear as merged in the GitHub API;
+        elif merged is not None and merged is False:
+            pr_events = get_json("%s/issues/%s/events" % (GITHUB_API_BASE, pr_num))
+            for event in pr_events:
+                if event.get("event") == "closed":
+                    commit_id = event.get("commit_id")
+                    if commit_id is not None:
+                        print(f"Pull request #{pr['number']} has already been merged, assuming you want to backport")
+                        merge_hash = pr.get("merge_commit_sha", "")
+                        cherry_pick(pr_num, merge_hash, latest_branch)
+                        sys.exit(0)
+                    else:
+                        print(f"Pull request #{pr['number']} has already been closed, but not merged, exiting.")
+                        exit()
 
     if not bool(pr["mergeable"]):
-        print(f"Pull request %s is not mergeable in its current form. Please resolve the merge conflicts first!\n" % pr_num)
+        print(f"Pull request %s is not mergeable in its current form.\n" % pr_num)
         exit()
 
     url = pr["url"]
