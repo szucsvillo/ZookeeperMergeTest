@@ -12,6 +12,7 @@ Teszt commit0
 Teszt commit34/3
 Teszt commit41/1
 Teszt commit41/2
+Teszt commit42/3
 Teszt commit21
 Teszt commit52
 
@@ -22,6 +23,8 @@ Teszt commit12
 Teszt commit32
 Teszt commit22
 Teszt commit41/3
+Teszt commit42/1
+Teszt commit42/2
 
 3
 Teszt commit03
