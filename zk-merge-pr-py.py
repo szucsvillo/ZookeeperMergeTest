@@ -178,6 +178,7 @@ def merge_pr(pr_num, title, pr_repo_desc):
         "commit_message": merged_string,
         "merge_method": "squash"
     }
+    continue_maybe("00000000000000000000000000000000000000Warning: There are requested changes. Proceed with merging pull request #%s?" % pr_num)
 
     response = requests.put(f"https://api.github.com/repos/{PUSH_REMOTE_NAME}/{PROJECT_NAME}/pulls/{pr_num}/merge", headers=headers, json=data)
     merge_response_json = response.json()
@@ -430,13 +431,13 @@ def main():
     if pull_request_state == "closed":
         merged = pr.get("merged")
         # Merged by the Github API
-        if merged is not None and merged is True:
+        if merged is True:
             print(f"Pull request #{pr['number']} has already been merged, assuming you want to backport")
             merge_hash = pr.get("merge_commit_sha", "")
             cherry_pick(pr_num, merge_hash, latest_branch)
             sys.exit(0)
         # Some merged pull requests don't appear as merged in the GitHub API;
-        elif merged is not None and merged is False:
+        else:
             pr_events = get_json("%s/issues/%s/events" % (GITHUB_API_BASE, pr_num))
             for event in pr_events:
                 if event.get("event") == "closed":
