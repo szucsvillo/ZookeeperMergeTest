@@ -70,6 +70,7 @@ Teszt commit59
 Teszt commit11
 Teszt commit30
 Teszt commit35/3
+Teszt commit70
 
 11
 Teszt40
