@@ -18,6 +18,8 @@ Teszt commit52
 Teszt commit82
 Teszt commit822
 Teszt commit823
+Teszt commit81
+
 
 
 2
@@ -70,14 +72,17 @@ Teszt commit58
 9
 Teszt commit29
 Teszt commit59
+Teszt commit80/2
 
 10
 Teszt commit11
 Teszt commit30
 Teszt commit35/3
 Teszt commit70
+Teszt commit80
 
 11
 Teszt40
 Teszt commit20
 Teszt commit50
+Teszt commit80/1
