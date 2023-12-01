@@ -56,6 +56,8 @@ Teszt commit27
 Teszt commit27/2
 Teszt commit57
 Teszt commit57/2
+Teszt commit67
+Teszt commit67/2
 
 8
 Teszt commit08
