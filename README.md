@@ -80,6 +80,7 @@ Teszt commit30
 Teszt commit35/3
 Teszt commit70
 Teszt commit80
+Teszt commit70
 
 11
 Teszt40
